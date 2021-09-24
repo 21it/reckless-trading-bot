@@ -1,0 +1,31 @@
+-- Syntax for this file here:
+-- https://github.com/yesodweb/persistent/blob/master/docs/Persistent-entity-syntax.md
+
+Price
+  base CurrencyCode'Base
+  quote CurrencyCode'Quote
+  buy ExchangeRate'Buy
+  sell ExchangeRate'Sell
+  insertedAt UTCTime
+  deriving Eq Show
+
+Order
+  externalId OrderExchangeId'Buy Maybe
+  amount MoneyAmount'Quote
+  base CurrencyCode'Base
+  quote CurrencyCode'Quote
+  rate ExchangeRate'Buy
+  status OrderStatus
+  insertedAt UTCTime
+  deriving Eq Show
+
+CounterOrder
+  externalId OrderExchangeId'Sell Maybe
+  reference OrderId
+  amount MoneyAmount'Quote
+  base CurrencyCode'Base
+  quote CurrencyCode'Quote
+  rate ExchangeRate'Buy
+  status OrderStatus
+  insertedAt UTCTime
+  deriving Eq Show

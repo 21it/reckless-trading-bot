@@ -1,11 +1,8 @@
-{ mkDerivation, async, base, bytestring, chronos, co-log
-, concur-core, concur-replica, containers, envparse, esqueleto
-, extra, file-embed, hpack, hspec, hspec-wai, katip, lens
-, microlens, monad-logger, persistent, persistent-migration
-, persistent-postgresql, persistent-template, replica
-, resource-pool, retry, stdenv, stm, template-haskell, text, time
-, unbounded-delays, universum, unliftio, wai
-, wai-middleware-static-embedded, warp, websockets
+{ mkDerivation, async, base, bitfinex-client, bytestring
+, containers, envparse, esqueleto, extra, hpack, hspec, katip, lib
+, monad-logger, persistent, persistent-postgresql, resource-pool
+, stm, template-haskell, text, time, transformers, unbounded-delays
+, universum, unliftio, witch
 }:
 mkDerivation {
   pname = "reckless-trading-bot";
@@ -14,31 +11,23 @@ mkDerivation {
   isLibrary = true;
   isExecutable = true;
   libraryHaskellDepends = [
-    async base bytestring chronos co-log concur-core concur-replica
-    containers envparse esqueleto extra file-embed hspec hspec-wai
-    katip lens microlens monad-logger persistent persistent-migration
-    persistent-postgresql persistent-template replica resource-pool
-    retry stm template-haskell text time unbounded-delays universum
-    unliftio wai wai-middleware-static-embedded warp websockets
+    async base bitfinex-client bytestring containers envparse esqueleto
+    extra katip monad-logger persistent persistent-postgresql
+    resource-pool stm template-haskell text time transformers
+    unbounded-delays universum unliftio witch
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
-    async base bytestring chronos co-log concur-core concur-replica
-    containers envparse esqueleto extra file-embed katip lens microlens
-    monad-logger persistent persistent-migration persistent-postgresql
-    persistent-template replica resource-pool retry stm
-    template-haskell text time unbounded-delays universum unliftio wai
-    wai-middleware-static-embedded warp websockets
+    base bytestring esqueleto katip monad-logger persistent
+    persistent-postgresql template-haskell text time unbounded-delays
+    universum
   ];
   testHaskellDepends = [
-    async base bytestring chronos co-log concur-core concur-replica
-    containers envparse esqueleto extra file-embed hspec hspec-wai
-    katip lens microlens monad-logger persistent persistent-migration
-    persistent-postgresql persistent-template replica resource-pool
-    retry stm template-haskell text time unbounded-delays universum
-    unliftio wai wai-middleware-static-embedded warp websockets
+    base bytestring esqueleto hspec katip monad-logger persistent
+    persistent-postgresql template-haskell text time unbounded-delays
+    universum
   ];
   prePatch = "hpack";
   homepage = "https://github.com/tkachuk-labs/reckless-trading-bot#readme";
-  license = stdenv.lib.licenses.bsd3;
+  license = lib.licenses.bsd3;
 }

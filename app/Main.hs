@@ -8,8 +8,7 @@ where
 
 import RecklessTradingBot.Data.AppM (runApp)
 import RecklessTradingBot.Import
-import qualified RecklessTradingBot.Wai.Chat as Chat (app)
-import qualified Network.Wai.Handler.Warp as Warp
+import qualified RecklessTradingBot.Thread.Main as MainThread
 
 main :: IO ()
 main = do
@@ -18,7 +17,7 @@ main = do
     mkHandleScribeWithFormatter
       ( case rawConfigLogFormat rc of
           Bracket -> bracketFormat
-          JSON -> jsonFormat
+          Json -> jsonFormat
       )
       ColorIfTerminal
       stdout
@@ -30,8 +29,7 @@ main = do
   bracket mkLogEnv closeScribes $ \le ->
     runKatipContextT le (mempty :: LogContexts) mempty $ do
       !env <- newEnv rc
-      res <- lift $ runApp env $ liftIO $ Chat.app env $ \app ->
-        Warp.run (envEndpointPort env) app
+      res <- lift $ runApp env $ MainThread.loop
       $(logTM) ErrorS
         $ logStr
         $ "Terminate program with result " <> (show res :: Text)

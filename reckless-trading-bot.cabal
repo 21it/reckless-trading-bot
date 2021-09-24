@@ -25,14 +25,16 @@ source-repository head
 
 library
   exposed-modules:
-      RecklessTradingBot.Class
+      RecklessTradingBot.Class.Env
       RecklessTradingBot.Data.AppM
       RecklessTradingBot.Data.Env
+      RecklessTradingBot.Data.Model
+      RecklessTradingBot.Data.Money
+      RecklessTradingBot.Data.Time
       RecklessTradingBot.Data.Type
       RecklessTradingBot.Import
       RecklessTradingBot.Import.External
-      RecklessTradingBot.Wai.Chat
-      RecklessTradingBot.Wai.Static
+      RecklessTradingBot.Thread.Main
   other-modules:
       Paths_reckless_trading_bot
   hs-source-dirs:
@@ -45,44 +47,32 @@ library
       ScopedTypeVariables
       GeneralizedNewtypeDeriving
       DerivingStrategies
-  ghc-options: -Weverything -Werror -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction
+      DerivingVia
+      StandaloneDeriving
+      DataKinds
+      KindSignatures
+  ghc-options: -Weverything -Werror -Wno-prepositive-qualified-module -Wno-missing-safe-haskell-mode -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction
   build-depends:
       async
-    , base >=4.7 && <5
+    , base >=4.15 && <5
+    , bitfinex-client
     , bytestring
-    , chronos
-    , co-log
-    , concur-core
-    , concur-replica
     , containers
     , envparse
     , esqueleto
     , extra
-    , file-embed
-    , hspec
-    , hspec-wai
     , katip
-    , lens
-    , microlens
-    , monad-logger
     , persistent
-    , persistent-migration
     , persistent-postgresql
-    , persistent-template
-    , replica
     , resource-pool
-    , retry
     , stm
-    , template-haskell
     , text
     , time
+    , transformers
     , unbounded-delays
     , universum
     , unliftio
-    , wai
-    , wai-middleware-static-embedded
-    , warp
-    , websockets
+    , witch
   default-language: Haskell2010
 
 executable reckless-trading-bot-exe
@@ -99,43 +89,14 @@ executable reckless-trading-bot-exe
       ScopedTypeVariables
       GeneralizedNewtypeDeriving
       DerivingStrategies
-  ghc-options: -Weverything -Werror -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction -threaded -rtsopts -with-rtsopts=-N
+      DerivingVia
+      StandaloneDeriving
+      DataKinds
+      KindSignatures
+  ghc-options: -Weverything -Werror -Wno-prepositive-qualified-module -Wno-missing-safe-haskell-mode -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      async
-    , base >=4.7 && <5
-    , bytestring
-    , chronos
-    , co-log
-    , concur-core
-    , concur-replica
-    , containers
-    , envparse
-    , esqueleto
-    , extra
-    , file-embed
-    , katip
-    , lens
-    , microlens
-    , monad-logger
-    , persistent
-    , persistent-migration
-    , persistent-postgresql
-    , persistent-template
+      base >=4.15 && <5
     , reckless-trading-bot
-    , replica
-    , resource-pool
-    , retry
-    , stm
-    , template-haskell
-    , text
-    , time
-    , unbounded-delays
-    , universum
-    , unliftio
-    , wai
-    , wai-middleware-static-embedded
-    , warp
-    , websockets
   default-language: Haskell2010
 
 test-suite reckless-trading-bot-test
@@ -153,43 +114,13 @@ test-suite reckless-trading-bot-test
       ScopedTypeVariables
       GeneralizedNewtypeDeriving
       DerivingStrategies
-  ghc-options: -Weverything -Werror -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction -threaded -rtsopts -with-rtsopts=-N
+      DerivingVia
+      StandaloneDeriving
+      DataKinds
+      KindSignatures
+  ghc-options: -Weverything -Werror -Wno-prepositive-qualified-module -Wno-missing-safe-haskell-mode -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missed-specialisations -Wno-all-missed-specialisations -Wno-unsafe -Wno-safe -Wno-missing-local-signatures -Wno-monomorphism-restriction -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      async
-    , base >=4.7 && <5
-    , bytestring
-    , chronos
-    , co-log
-    , concur-core
-    , concur-replica
-    , containers
-    , envparse
-    , esqueleto
-    , extra
-    , file-embed
+      base >=4.15 && <5
     , hspec
-    , hspec-wai
-    , katip
-    , lens
-    , microlens
-    , monad-logger
-    , persistent
-    , persistent-migration
-    , persistent-postgresql
-    , persistent-template
     , reckless-trading-bot
-    , replica
-    , resource-pool
-    , retry
-    , stm
-    , template-haskell
-    , text
-    , time
-    , unbounded-delays
-    , universum
-    , unliftio
-    , wai
-    , wai-middleware-static-embedded
-    , warp
-    , websockets
   default-language: Haskell2010

@@ -8,60 +8,79 @@ module RecklessTradingBot.Data.Env
   )
 where
 
-import Env ((<=<), auto, header, help, keep, nonempty, parse, str, var)
+import qualified BitfinexClient as Bfx
+import Env
+  ( Error (UnreadError),
+    auto,
+    header,
+    help,
+    keep,
+    nonempty,
+    parse,
+    str,
+    var,
+  )
+import RecklessTradingBot.Data.Time
 import RecklessTradingBot.Data.Type
 import RecklessTradingBot.Import.External
 
-data Env
-  = Env
-      { -- general
-        envEndpointPort :: Int,
-        -- logging
-        envKatipNS :: Namespace,
-        envKatipCTX :: LogContexts,
-        envKatipLE :: LogEnv,
-        -- app
-        envMsgAlert :: TChan (),
-        envMsgHistory :: TVar [Message]
-      }
+data Env = Env
+  { -- logging
+    envKatipNS :: Namespace,
+    envKatipCTX :: LogContexts,
+    envKatipLE :: LogEnv,
+    -- app
+    envPriceTtl :: Seconds,
+    envBfx :: Bfx.Env
+  }
 
-data RawConfig
-  = RawConfig
-      { -- general
-        rawConfigEndpointPort :: Int,
-        -- katip
-        rawConfigLogEnv :: Text,
-        rawConfigLogFormat :: LogFormat,
-        rawConfigLogVerbosity :: Verbosity
-      }
+data RawConfig = RawConfig
+  { -- general
+    rawConfigBfx :: Bfx.Env,
+    rawConfigPriceTtl :: Seconds,
+    -- katip
+    rawConfigLogEnv :: Text,
+    rawConfigLogFormat :: LogFormat,
+    rawConfigLogVerbosity :: Verbosity
+  }
 
 rawConfig :: IO RawConfig
-rawConfig =
+rawConfig = do
+  env <- Bfx.newEnv
   parse (header "RecklessTradingBot config") $
-    RawConfig
-      <$> var (auto <=< nonempty) "RECKLESS_TRADING_BOT_ENDPOINT_PORT" op
-      <*> var (str <=< nonempty) "RECKLESS_TRADING_BOT_LOG_ENV" op
-      <*> var (auto <=< nonempty) "RECKLESS_TRADING_BOT_LOG_FORMAT" op
-      <*> var (auto <=< nonempty) "RECKLESS_TRADING_BOT_LOG_VERBOSITY" op
+    RawConfig env
+      <$> var
+        (err . newSeconds <=< auto <=< nonempty)
+        "RECKLESS_TRADING_BOT_PRICE_TTL"
+        op
+      <*> var
+        (str <=< nonempty)
+        "RECKLESS_TRADING_BOT_LOG_ENV"
+        op
+      <*> var
+        (auto <=< nonempty)
+        "RECKLESS_TRADING_BOT_LOG_FORMAT"
+        op
+      <*> var
+        (auto <=< nonempty)
+        "RECKLESS_TRADING_BOT_LOG_VERBOSITY"
+        op
   where
     op = keep <> help ""
+    err = first $ UnreadError . show
 
 newEnv :: RawConfig -> KatipContextT IO Env
 newEnv !rc = do
   le <- getLogEnv
   ctx <- getKatipContext
   ns <- getKatipNamespace
-  ma <- liftIO $ atomically newBroadcastTChan
-  mh <- liftIO $ atomically $ newTVar []
   return $
     Env
-      { -- general
-        envEndpointPort = rawConfigEndpointPort rc,
-        -- logging
+      { -- logging
         envKatipLE = le,
         envKatipCTX = ctx,
         envKatipNS = ns,
         -- app
-        envMsgAlert = ma,
-        envMsgHistory = mh
+        envPriceTtl = rawConfigPriceTtl rc,
+        envBfx = rawConfigBfx rc
       }

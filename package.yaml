@@ -20,50 +20,7 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/tkachuk-labs/reckless-trading-bot#readme>
 
 dependencies:
-# foundation
-- base >= 4.7 && < 5
-- universum
-# time
-- time
-- chronos
-- unbounded-delays
-- retry
-# storage
-- persistent
-- persistent-postgresql
-- persistent-template
-- persistent-migration
-- esqueleto
-# logging
-- katip
-- monad-logger
-- co-log
-# web
-- wai
-- wai-middleware-static-embedded
-- warp
-- websockets
-- replica
-- concur-core
-- concur-replica
-# lens
-- lens
-- microlens
-# bytes and text
-- bytestring
-- text
-# threads
-- async
-- stm
-- resource-pool
-# th
-- template-haskell
-- file-embed
-# other
-- unliftio
-- containers
-- envparse
-- extra
+- base >= 4.15 && < 5
 
 library:
   source-dirs: src
@@ -75,11 +32,17 @@ library:
   - ScopedTypeVariables
   - GeneralizedNewtypeDeriving
   - DerivingStrategies
+  - DerivingVia
+  - StandaloneDeriving
+  - DataKinds
+  - KindSignatures
   ghc-options:
   # For details on warnings: https://downloads.haskell.org/~ghc/master/users-guide/using-warnings.html
   # Enable all warnings with -Weverything, then disable the ones we don’t care about
   - -Weverything
   - -Werror
+  - -Wno-prepositive-qualified-module
+  - -Wno-missing-safe-haskell-mode
   - -Wno-missing-exported-signatures # missing-exported-signatures turns off the more strict -Wmissing-signatures. See https://ghc.haskell.org/trac/ghc/ticket/14794#ticket
   - -Wno-missing-import-lists # Requires explicit imports of _every_ function (e.g. ‘$’); too strict
   - -Wno-missed-specialisations # When GHC can’t specialize a polymorphic function. No big deal and requires fixing underlying libraries to solve.
@@ -89,8 +52,32 @@ library:
   - -Wno-missing-local-signatures # Warning for polymorphic local bindings; nothing wrong with those.
   - -Wno-monomorphism-restriction # Don’t warn if the monomorphism restriction is used
   dependencies:
-  - hspec
-  - hspec-wai
+  # foundation
+  - universum
+  # time
+  - time
+  - unbounded-delays
+  # storage
+  - persistent
+  - persistent-postgresql
+  - esqueleto
+  # logging
+  - katip
+  # bytes and text
+  - bytestring
+  - text
+  # threads
+  - async
+  - stm
+  - resource-pool
+  # other
+  - witch
+  - transformers
+  - bitfinex-client
+  - unliftio
+  - containers
+  - envparse
+  - extra
 
 executables:
   reckless-trading-bot-exe:
@@ -104,11 +91,17 @@ executables:
     - ScopedTypeVariables
     - GeneralizedNewtypeDeriving
     - DerivingStrategies
+    - DerivingVia
+    - StandaloneDeriving
+    - DataKinds
+    - KindSignatures
     ghc-options:
     # For details on warnings: https://downloads.haskell.org/~ghc/master/users-guide/using-warnings.html
     # Enable all warnings with -Weverything, then disable the ones we don’t care about
     - -Weverything
     - -Werror
+    - -Wno-prepositive-qualified-module
+    - -Wno-missing-safe-haskell-mode
     - -Wno-missing-exported-signatures # missing-exported-signatures turns off the more strict -Wmissing-signatures. See https://ghc.haskell.org/trac/ghc/ticket/14794#ticket
     - -Wno-missing-import-lists # Requires explicit imports of _every_ function (e.g. ‘$’); too strict
     - -Wno-missed-specialisations # When GHC can’t specialize a polymorphic function. No big deal and requires fixing underlying libraries to solve.
@@ -135,11 +128,17 @@ tests:
     - ScopedTypeVariables
     - GeneralizedNewtypeDeriving
     - DerivingStrategies
+    - DerivingVia
+    - StandaloneDeriving
+    - DataKinds
+    - KindSignatures
     ghc-options:
     # For details on warnings: https://downloads.haskell.org/~ghc/master/users-guide/using-warnings.html
     # Enable all warnings with -Weverything, then disable the ones we don’t care about
     - -Weverything
     - -Werror
+    - -Wno-prepositive-qualified-module
+    - -Wno-missing-safe-haskell-mode
     - -Wno-missing-exported-signatures # missing-exported-signatures turns off the more strict -Wmissing-signatures. See https://ghc.haskell.org/trac/ghc/ticket/14794#ticket
     - -Wno-missing-import-lists # Requires explicit imports of _every_ function (e.g. ‘$’); too strict
     - -Wno-missed-specialisations # When GHC can’t specialize a polymorphic function. No big deal and requires fixing underlying libraries to solve.
@@ -154,4 +153,3 @@ tests:
     dependencies:
     - reckless-trading-bot
     - hspec
-    - hspec-wai

@@ -8,11 +8,11 @@ export PATH=/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin
 echo 'http2 = false' >> /etc/nix/nix.conf
 
 NIX_CHANNELS="$(nix-channel --list)"
-EXPECTED_NIX_CHANNELS="nixpkgs https://nixos.org/channels/nixos-19.09"
+EXPECTED_NIX_CHANNELS="nixpkgs https://nixos.org/channels/nixos-21.05"
 
 if [ "$NIX_CHANNELS" != "$EXPECTED_NIX_CHANNELS" ]; then
   echo "got '$NIX_CHANNELS' but expected '$EXPECTED_NIX_CHANNELS'"
-  nix-channel --add https://nixos.org/channels/nixos-19.09 nixpkgs
+  nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
   nix-channel --update
 else
   echo "already updated ==> nix channels"

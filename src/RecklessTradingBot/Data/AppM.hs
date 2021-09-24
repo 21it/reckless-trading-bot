@@ -3,41 +3,45 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# OPTIONS_GHC -Wno-missing-deriving-strategies #-}
 
 module RecklessTradingBot.Data.AppM
   ( runApp,
-    EnvM (..),
+    Env (..),
   )
 where
 
+import qualified RecklessTradingBot.Data.Env as EnvData
 import RecklessTradingBot.Import
 
-newtype AppM m a
-  = AppM
-      { unAppM :: ReaderT Env m a
-      }
-  deriving (Functor, Applicative, Monad, MonadIO, MonadReader Env)
+newtype AppM m a = AppM
+  { unAppM :: ReaderT EnvData.Env m a
+  }
+  deriving
+    ( Functor,
+      Applicative,
+      Monad,
+      MonadIO,
+      MonadUnliftIO,
+      MonadReader EnvData.Env
+    )
 
-runApp :: Env -> AppM m a -> m a
+runApp :: EnvData.Env -> AppM m a -> m a
 runApp env app = runReaderT (unAppM app) env
 
-instance (MonadUnliftIO m) => MonadUnliftIO (AppM m) where
-  askUnliftIO =
-    AppM (fmap (\(UnliftIO run) -> UnliftIO (run . unAppM)) askUnliftIO)
-  withRunInIO go = AppM (withRunInIO (\k -> go (k . unAppM)))
-
 instance (MonadIO m) => Katip (AppM m) where
-  getLogEnv = asks envKatipLE
+  getLogEnv = asks EnvData.envKatipLE
   localLogEnv f (AppM m) =
-    AppM (local (\s -> s {envKatipLE = f (envKatipLE s)}) m)
+    AppM (local (\s -> s {EnvData.envKatipLE = f (EnvData.envKatipLE s)}) m)
 
 instance (MonadIO m) => KatipContext (AppM m) where
-  getKatipContext = asks envKatipCTX
+  getKatipContext = asks EnvData.envKatipCTX
   localKatipContext f (AppM m) =
-    AppM (local (\s -> s {envKatipCTX = f (envKatipCTX s)}) m)
-  getKatipNamespace = asks envKatipNS
+    AppM (local (\s -> s {EnvData.envKatipCTX = f (EnvData.envKatipCTX s)}) m)
+  getKatipNamespace = asks EnvData.envKatipNS
   localKatipNamespace f (AppM m) =
-    AppM (local (\s -> s {envKatipNS = f (envKatipNS s)}) m)
+    AppM (local (\s -> s {EnvData.envKatipNS = f (EnvData.envKatipNS s)}) m)
 
-instance (MonadIO m) => EnvM (AppM m) where
-  getEnv = ask
+instance (MonadIO m) => Env (AppM m) where
+  sleepPriceTtl = asks EnvData.envPriceTtl >>= sleep
+  withBfx = (asks EnvData.envBfx >>=)
