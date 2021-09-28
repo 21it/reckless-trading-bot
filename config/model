@@ -2,30 +2,38 @@
 -- https://github.com/yesodweb/persistent/blob/master/docs/Persistent-entity-syntax.md
 
 Price
-  base CurrencyCode'Base
-  quote CurrencyCode'Quote
-  buy ExchangeRate'Buy
-  sell ExchangeRate'Sell
-  insertedAt UTCTime
+  base (CurrencyCode 'Bfx.Base)
+  quote (CurrencyCode 'Bfx.Quote)
+  buy (ExchangeRate 'Bfx.Buy)
+  sell (ExchangeRate 'Bfx.Sell)
+  at UTCTime
   deriving Eq Show
 
 Order
-  externalId OrderExchangeId'Buy Maybe
-  amount MoneyAmount'Quote
-  base CurrencyCode'Base
-  quote CurrencyCode'Quote
-  rate ExchangeRate'Buy
+  base (CurrencyCode 'Bfx.Base)
+  quote (CurrencyCode 'Bfx.Quote)
+  --
+  -- Order might refer to another Order
+  -- as follow-up in some strategies,
+  -- for example Martingale.
+  --
+  intRef OrderId Maybe
+  extRef (OrderExternalId 'Bfx.Buy) Maybe
+  price (ExchangeRate 'Bfx.Buy)
+  gain (MoneyAmount 'Bfx.Base)
+  loss (MoneyAmount 'Bfx.Quote)
+  fee (FeeRate 'Bfx.Base)
   status OrderStatus
   insertedAt UTCTime
   deriving Eq Show
 
 CounterOrder
-  externalId OrderExchangeId'Sell Maybe
-  reference OrderId
-  amount MoneyAmount'Quote
-  base CurrencyCode'Base
-  quote CurrencyCode'Quote
-  rate ExchangeRate'Buy
+  intRef OrderId
+  extRef (OrderExternalId 'Bfx.Sell) Maybe
+  price (ExchangeRate 'Bfx.Sell)
+  gain (MoneyAmount 'Bfx.Quote)
+  loss (MoneyAmount 'Bfx.Base)
+  fee (FeeRate 'Bfx.Quote)
   status OrderStatus
   insertedAt UTCTime
   deriving Eq Show

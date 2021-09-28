@@ -7,4 +7,4 @@ extra-deps:
   - github: tkachuk-labs/persistent-migration
     commit: 0e40b397fa1042e117ec0809d5715b7aa1e636f6
   - github: tkachuk-labs/bitfinex-client
-    commit: 3d26b5335d8c151d3ccc093de12afc65e90b6d90
+    commit: dba0d3ae58bca6f9712c474bb711a2478193c510

@@ -16,16 +16,16 @@ packages:
   original:
     url: https://github.com/tkachuk-labs/persistent-migration/archive/0e40b397fa1042e117ec0809d5715b7aa1e636f6.tar.gz
 - completed:
-    size: 21323
-    url: https://github.com/tkachuk-labs/bitfinex-client/archive/3d26b5335d8c151d3ccc093de12afc65e90b6d90.tar.gz
+    size: 21659
+    url: https://github.com/tkachuk-labs/bitfinex-client/archive/dba0d3ae58bca6f9712c474bb711a2478193c510.tar.gz
     name: bitfinex-client
     version: 0.1.0.0
-    sha256: f9bc022ca37af13388aa4b9607ae619c9f4e08c6a22d393e171c7195002cf5ae
+    sha256: b311e1a2e48c0b610a09e3ee1009dbfb21702a09201e80662d5307d210fe37fc
     pantry-tree:
       size: 3898
-      sha256: 6ed6dd68d3276e4f36ed09b8da4f4020b034938fe614610477488f14c6354ae8
+      sha256: 027a912a86da68092a9c15d78d7da7d07ef0f9bb36b9d291ca51bb06c824247b
   original:
-    url: https://github.com/tkachuk-labs/bitfinex-client/archive/3d26b5335d8c151d3ccc093de12afc65e90b6d90.tar.gz
+    url: https://github.com/tkachuk-labs/bitfinex-client/archive/dba0d3ae58bca6f9712c474bb711a2478193c510.tar.gz
 snapshots:
 - completed:
     size: 581696

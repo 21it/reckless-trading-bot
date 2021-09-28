@@ -66,6 +66,7 @@ library:
   # bytes and text
   - bytestring
   - text
+  - aeson
   # threads
   - async
   - stm

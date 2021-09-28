@@ -2,6 +2,7 @@ module RecklessTradingBot.Data.Money
   ( CurrencyCode (..),
     ExchangeRate (..),
     MoneyAmount (..),
+    FeeRate (..),
   )
 where
 
@@ -71,4 +72,29 @@ instance PersistField (MoneyAmount a) where
     x ->
       Left $
         "MoneyAmount PersistValue is invalid "
+          <> show x
+
+newtype FeeRate (a :: Bfx.CurrencyRelation)
+  = FeeRate Bfx.PosRat
+  deriving newtype (Eq, Ord, Show, Num)
+
+deriving via
+  Rational
+  instance
+    PersistFieldSql (FeeRate a)
+
+instance PersistField (FeeRate a) where
+  toPersistValue =
+    PersistRational
+      . Bfx.fromRatio
+      . Bfx.unPosRat
+      . coerce
+  fromPersistValue = \case
+    PersistRational x0 ->
+      case Bfx.newPosRat x0 of
+        Left e -> Left $ show e
+        Right x1 -> Right $ FeeRate x1
+    x ->
+      Left $
+        "FeeRate PersistValue is invalid "
           <> show x
